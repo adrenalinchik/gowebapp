@@ -11,23 +11,9 @@ import (
 
 func main() {
 	log.InitLogger(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
-	log.Info.Println("Starting...")
-	//v := []model.Vehicle{
-	//	model.Vehicle{1},
-	//	model.Vehicle{2},
-	//}
-	//owner := &model.Owner{
-	//	64,
-	//	"Taras",
-	//	"Fihurnyak",
-	//	model.Male,
-	//	time.Now(),
-	//	model.Active,
-	//	v}
-
+	log.Info.Println("starting...")
 	service.InitDB("root:@tcp(127.0.0.1:3306)/", "test1", "?parseTime=true")
-	log.Info.Println("Migration finished successfully")
-	controller.InitControllers()
-
 	defer service.CloseDbConn()
+	log.Info.Println("migration finished successfully")
+	controller.RegisterHandlers()
 }

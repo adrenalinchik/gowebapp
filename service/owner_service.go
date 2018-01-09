@@ -24,7 +24,7 @@ func (s *OwnerService) Get(id int64) (owner *model.Owner, err error) {
 	owner, err = ownerRepo.Get(id)
 	strid := strconv.FormatInt(id, 10)
 	if err == sql.ErrNoRows {
-		err = errors.New("no owner found with id = " + strid)
+		err = fmt.Errorf("no owner found with id = " + strid)
 		log.Error.Println(err)
 		return
 	}
@@ -40,7 +40,7 @@ func (s *OwnerService) Get(id int64) (owner *model.Owner, err error) {
 func (s *OwnerService) GetByEmail(email string) (owner *model.Owner, err error) {
 	owner, err = ownerRepo.GetByEmail(email)
 	if err == sql.ErrNoRows {
-		err = errors.New("no owner found with email = " + email)
+		err = fmt.Errorf("no owner found with email = " + email)
 		log.Error.Println(err)
 		return
 	}
@@ -89,12 +89,11 @@ func (s *OwnerService) GetAll() (owners [] *model.Owner, err error) {
 
 func (s *OwnerService) Create(owner *model.Owner) (o *model.Owner, err error) {
 	if !owner.Valid() {
-		err = errors.New("owner validation is failed")
-		o = owner
+		err = fmt.Errorf("owner validation is failed")
 		return
 	}
 	if own, _ := s.GetByEmail(owner.Email); own.Email == owner.Email {
-		err = errors.New("owner with such email is already in the system")
+		err = fmt.Errorf("owner with such email is already in the system")
 		return
 	}
 	owner.Id, err = ownerRepo.Insert(owner)
@@ -117,12 +116,12 @@ func (s *OwnerService) Create(owner *model.Owner) (o *model.Owner, err error) {
 
 func (s *OwnerService) Update(owner *model.Owner) (o *model.Owner, err error) {
 	if !owner.Valid() {
-		err = errors.New("owner validation is failed")
+		err = fmt.Errorf("owner validation is failed")
 		o = owner
 		return
 	}
 	if own, _ := s.GetByEmail(owner.Email); own.Email == owner.Email && own.Id != owner.Id {
-		err = errors.New("owner with such email is already in the system")
+		err = fmt.Errorf("owner with such email is already in the system")
 		return
 	}
 	owner.Id, err = ownerRepo.Update(owner)

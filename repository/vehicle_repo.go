@@ -14,6 +14,16 @@ func InitVehicleRepo() (r *VehicleRepo) {
 	return &VehicleRepo{}
 }
 
+func (r *VehicleRepo) Get(id int64) (vehicle *model.Vehicle, err error) {
+	row := db.QueryRow("SELECT * FROM VEHICLE WHERE ID = ?", id)
+	vehicle = new(model.Vehicle)
+	err = row.Scan(&vehicle.Id, &vehicle.OwnerId, &vehicle.Model, &vehicle.Number, &vehicle.Type, &vehicle.State)
+	if err != nil {
+		log.Error.Println(err)
+	}
+	return
+}
+
 func (r *VehicleRepo) GetByOwner(id int64) (vehicles []*model.Vehicle, err error) {
 	rows, err := db.Query("SELECT * FROM VEHICLE WHERE OWNER_ID = ?", id)
 	if err != nil {

@@ -15,6 +15,9 @@ import (
 	"github.com/adrenalinchik/gowebapp/model"
 )
 
+// TestMain is responsible for preconditions and postconditions in test suit.
+// Before tests are started it creates logger, database and save test data to db.
+// After all test are finished successfully or not it deletes db and close connection to db instance.
 func TestMain(m *testing.M) {
 	test.Setup()
 	code := m.Run()
@@ -50,7 +53,7 @@ func TestCreateOwner(t *testing.T) {
 				t.Fatalf("could not created request: %v", err)
 			}
 			rec := httptest.NewRecorder()
-			createOwner(rec, reg)
+			CreateOwner(rec, reg)
 			res := rec.Result()
 			defer res.Body.Close()
 
@@ -95,12 +98,12 @@ func TestGetOwner(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			reg, err := http.NewRequest("GET", "localhost:8080/owner/get?id="+tc.id, nil)
+			reg, err := http.NewRequest("GET", "localhost:8080/owner?id="+tc.id, nil)
 			if err != nil {
 				t.Fatalf("could not created request: %v", err)
 			}
 			rec := httptest.NewRecorder()
-			getOwnerById(rec, reg)
+			GetOwner(rec, reg)
 			res := rec.Result()
 			defer res.Body.Close()
 
